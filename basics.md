@@ -396,7 +396,10 @@ Reactivity: when a program is able to react to the changes (Think about using Ex
 
 In Vue, its using `JavaScript Proxy` to observe the changes of the object.
 
-`ref()` is a common way for Vue to handle state value changes ~
+- `ref()` - Creates reactive references for primitive values
+- `reactive()` - Creates reactive proxies for objects
+- `computed()` - Creates computed properties
+- `watch()` - Watches reactive data changes
 
 ```js
 const data = {
@@ -547,6 +550,109 @@ function toggleTitle() {
 </script>
 ```
 
-## 5.  
+## 5. Composition API
 
 ### Concept
+
+Composition API (in VueJS) is for better code organization and reusability.
+
+In Vue, more like `composition api = reactivity api + lifecycle hooks`
+
+(Perosnal understanding: like React custom hooks, define reusable code blocks and reuse it ~)
+
+### Main parts
+
+(1). `setup()`: the entry point og composition API where we can define reactive data, computed properties, methods and lifecycle hooks.
+
+### Basic Example
+
+```js
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<div id="app"></div>
+
+<script>
+  const { createApp, watchEffect, ref } = Vue;
+
+  function useFetch(getUrl) {
+    const data = ref(null); // reset all states before calling useFetch hook
+    const error = ref(null);
+    const isPending = ref(true);
+
+    watchEffect(() => {
+      data.value = null;
+      error.value = null;
+      isPending.value = true;
+
+      console.log('getUrl: ', getUrl());
+
+      fetch(getUrl())
+        .then(res => res.json())
+        .then(_data => {
+          data.value = _data;
+        })
+        .catch(err => {
+          error.value = err;
+        }).finally(() => {
+          isPending.value = false;
+        });
+    });
+
+    return {
+      data,
+      error,
+      isPending
+    };
+  }
+
+  const Post = {
+    props: ['id'],
+    template: `
+    <div v-if="isPending">Loading ..</div>
+    <div v-else-if="data">{{ data }}</div>
+    <div v-else-if="error">Oops, something went wrong: {{ error?.message }}</div>
+    `,
+    setup(props) {
+      const { data, error, isPending } = useFetch(() => `https://jsonplaceholder.typicode.com/todos/${props.id}`);
+      // debugger
+      
+      return {
+        data,
+        error,
+        isPending
+      }
+    }
+  }
+
+  const App = {
+    components: { Post },
+    data() {
+      return {
+        id: 1
+      }
+    },
+    template: `
+      <button @click="id++">Change ID to {{ id }}</button>
+      <Post :id="id" />
+    `
+  };
+
+  createApp(App).mount('#app');
+</script>
+```
+
+### What is `computed properties`?
+
+computed properties:
+  - are cached reactive values that are derived from one or more reactive data sources.
+  - automatically update when their dependencies changed and then cached the latest updates until the next time their dependencies get updated
+  - When shoudl use it?
+    - `expensive` caclculation
+    - `filtering/sorting` lists
+    - `formatting & transforming` data for display
+    - `complex logics` (multiple reactive dependencies required)
+
+### Difference between `watch()` & `watchEffect()`
+
+- `watch()`: more efficient when you know exactly what to watch
+- `watchEffect()`: slightly more overhead due to automatic dependency tracking

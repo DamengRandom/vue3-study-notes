@@ -234,7 +234,7 @@ patch(vdom, vdom2);
 
 <!-- reactivity reactive example -->
 
-```html
+<!-- ```html
 <script>
   let activeEffect;
 
@@ -332,4 +332,79 @@ patch(vdom, vdom2);
 
   state.count++;
 </script>
-```
+``` -->
+
+<!-- composition api example -->
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<div id="app"></div>
+
+<script>
+  const { createApp, watchEffect, ref } = Vue;
+
+  function useFetch(getUrl) {
+    const data = ref(null); // reset all states before calling useFetch hook
+    const error = ref(null);
+    const isPending = ref(true);
+
+    watchEffect(() => {
+      data.value = null;
+      error.value = null;
+      isPending.value = true;
+
+      console.log('getUrl: ', getUrl());
+
+      fetch(getUrl())
+        .then(res => res.json())
+        .then(_data => {
+          data.value = _data;
+        })
+        .catch(err => {
+          error.value = err;
+        }).finally(() => {
+          isPending.value = false;
+        });
+    });
+
+    return {
+      data,
+      error,
+      isPending
+    };
+  }
+
+  const Post = {
+    props: ['id'],
+    template: `
+    <div v-if="isPending">Loading ..</div>
+    <div v-else-if="data">{{ data }}</div>
+    <div v-else-if="error">Oops, something went wrong: {{ error?.message }}</div>
+    `,
+    setup(props) {
+      const { data, error, isPending } = useFetch(() => `https://jsonplaceholder.typicode.com/todos/${props.id}`);
+      // debugger
+      
+      return {
+        data,
+        error,
+        isPending
+      }
+    }
+  }
+
+  const App = {
+    components: { Post },
+    data() {
+      return {
+        id: 1
+      }
+    },
+    template: `
+      <button @click="id++">Change ID to {{ id }}</button>
+      <Post :id="id" />
+    `
+  };
+
+  createApp(App).mount('#app');
+</script>
