@@ -17,12 +17,12 @@ setTimeout(() => {
 
 console.log(reactiveNotUpdate.value); // {}
 // As you can see result still {} not { a: 1, b: 2 }. Why?
-// Becuase after setTimeout process, reactiveNotUpdate turns into an object, but before assign { a: 1, b: 2 } to reactiveNotUpdate, reactiveNotUpdate was an proxy object, which was reactive !!!
+// Because after setTimeout process, reactiveNotUpdate turns into an object, but before assign { a: 1, b: 2 } to reactiveNotUpdate, reactiveNotUpdate was an proxy object, which was reactive !!!
 ```
 
 In above case, better use `ref`.
 
-(Always rememeber we need to use `ref.value = 'assign a value here'`)
+(Always remember we need to use `ref.value = 'assign a value here'`)
 always `.value` assign value, because .value reflects current ref object is proxy object, will be reactive !!!
 
 When modify data case, we can use either `ref` or `reactive`.

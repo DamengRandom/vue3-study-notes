@@ -4,11 +4,11 @@
 
 Parent -> (subscribe) -> topic <- (publish) <- Child
 
-Pesudo code now, so we start to define topic name first inside parent level:
+Pseudo code now, so we start to define topic name first inside parent level:
 
 In parent component:
 
-```
+```js
 @topicName="fnToReceiveChildProps"
 
 fnToReceiveChildProps(childProps) {
@@ -20,10 +20,10 @@ Now turn to the child level, which publishes the props/values to parent level.
 
 In child component:
 
-```
+```html
 <input type="submit" @click="$emit('topicName', { prop: 'prop', value: 'value' })" />
 ```
 
-Thast it !!
+Thats it !!
 
 Always remember this formula, better for writing Vue components more, more practice, solid memo then ~

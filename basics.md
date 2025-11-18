@@ -82,7 +82,7 @@ One of `TEXT` dynamic change examples:
 
 ### Basic form of `h` function
 
-Alternative is using `template` (synatx sugar)
+Alternative is using `template` (syntax sugar)
 
 ```js
 import { h } from 'vue';
@@ -144,7 +144,7 @@ const App = {
     <div>hey</div>
     <div>hey</div>
   </Stack>
-</Satck>
+</Stack>
 <!-- In Plain HTML will be represent like this: -->
 <div class="stack">
   <div class="mt-4">
@@ -232,7 +232,7 @@ const Stack = {
 
 ### Concepts
 
-`mount()` in Vue is a function which attachs vue application instance (`createApp()`) to a DOM element.
+`mount()` in Vue is a function which attaches vue application instance (`createApp()`) to a DOM element.
 
 `patch()` is a function which is used for updating the virtual DOM tree.
 
@@ -449,7 +449,7 @@ console.log(observedData.name); // unknown
     activeEffect = null;
   }
 
-  // Basic JS way to implmenet reactive method
+  // Basic JS way to implement reactive method
 
   // function reactive(raw) {
   //   Object.keys(raw).forEach(key => {
@@ -646,8 +646,8 @@ In Vue, more like `composition api = reactivity api + lifecycle hooks`
 computed properties:
   - are cached reactive values that are derived from one or more reactive data sources.
   - automatically update when their dependencies changed and then cached the latest updates until the next time their dependencies get updated
-  - When shoudl use it?
-    - `expensive` caclculation
+  - When should use it?
+    - `expensive` calculation
     - `filtering/sorting` lists
     - `formatting & transforming` data for display
     - `complex logics` (multiple reactive dependencies required)
