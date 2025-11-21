@@ -137,3 +137,37 @@ product.quantity = 4; // update quantity value // 4
 trigger(product, 'quantity'); // trigger effect() based on the latest quantity value !! // undefined
 total // See,m now the latest value will be 40
 ```
+
+
+```js
+// Class version
+class Reactive {
+  constructor(price = 10, quantity = 1) {
+    this.price = price;
+    this.quantity = quantity;
+    this.total = 0;
+    this.dep = new Set();
+  }
+
+  track(effect) {
+    this.dep.add(effect);
+  }
+
+  effect() {
+    this.total = this.price * this.quantity;
+  }
+
+  trigger() {
+    this.dep.forEach(fn => fn());
+  }
+}
+
+const r = new Reactive(10, 1);
+r.track(r.effect.bind(r));
+r.effect();
+console.log(r.total);
+console.log(r.quantity);
+r.quantity = 3;
+r.trigger();
+console.log(r.total);
+```
