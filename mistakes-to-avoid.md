@@ -239,7 +239,30 @@ const _data = ref(newPropsData);
 
 ## Do not use composable function outside the script `setup` tag or `setup()` function
 
-- 
+```html
+<script>
+// Outside setup - BAD!
+import { useUser } from '@/composables/useUser'
+
+// This won't work as expected
+const { user, login } = useUser()
+
+export default {
+  setup() {
+    // ...
+  }
+}
+</script>
+```
+
+```html
+<script setup>
+// Inside setup - GOOD!
+import { useUser } from '@/composables/useUser'
+
+const { user, login } = useUser()
+</script>
+```
 
 ## Please always use UI component libs for building your application, instead of building your own UI component libs from scratch 🩸🩸🩸 lessons
 
@@ -250,5 +273,3 @@ const _data = ref(newPropsData);
 - Do not put too much code logics inside Pania store, and keep it SRP (Single Responsibility Principle), shorter (eg: separate into multiple smaller functions, create some selectors and etc) ~
 
 - When we write code, always re-check the code and ask ourselves a question: WHAT IS THE MEANING FOR ME TO WRITE THIS CODE? And find the answer for yourself, if answer is blurred, it means, this code we actually don't understand (Be mindful: Alway be prepared for questions from your colleagues about the code you write) !!!!
-
-##

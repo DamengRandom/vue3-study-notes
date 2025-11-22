@@ -252,3 +252,53 @@ const UserList = defineAsyncComponent(() =>
 (making data fetching for support Server Side Rendering (SSR))
 - `$fetch`: When doing event triggering, eg: onSubmit, onClick, etc, we can use $fetch to do the data fetching ~
 (Client side API call support)
+
+## When to not use `.value`?
+
+```html
+<template>
+  <!-- ❌ NO .value in template -->
+  <div>{{ count }}</div>
+  
+  <!-- ❌ NO .value for methods -->
+  <button @click="increment">Increment</button>
+  
+  <!-- ❌ NO .value for reactive objects -->
+  <div>{{ user.name }}</div>
+  
+  <!-- ❌ NO .value in v-model -->
+  <input v-model="username">
+</template>
+```
+
+```html
+<script setup>
+const props = defineProps({
+  userId: Number,
+  userData: Object
+})
+
+// ❌ NO .value for props (they're already reactive)
+console.log(props.userId)
+console.log(props.userData.name)
+</script>
+```
+
+Summary
+
+| Context | Need .value? | Example |
+| --- | --- | --- |
+| `<script setup>` | ✅ Yes | `count.value++` |
+| `<template>` | ❌ No | `{{ count }}` |
+| `computed()` | ✅ Yes | `return count.value * 2` |
+| `watch()` | ✅ Yes | `watch(count, (val) => ...)` |
+| `Lifecycle hooks` | ✅ Yes | `onMounted(() => count.value)` |
+| `Template refs` | ✅ Yes | `inputRef.value.focus()` |
+| `Reactive props` | ❌ No | `props.userId` |
+| `Reactive destructure` | ❌ No | `const { count } = state` |
+
+## Check bundle files size ~
+
+```bash
+pnpm dlx vite-bundle-visualizer
+```
