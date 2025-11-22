@@ -244,3 +244,11 @@ const UserList = defineAsyncComponent(() =>
 )
 </script>
 ```
+
+
+## `useFetch` & `$fetch`
+
+- `useFetch`: need to use useFetch in page level of vue components (When doing data fetching for that component)
+(making data fetching for support Server Side Rendering (SSR))
+- `$fetch`: When doing event triggering, eg: onSubmit, onClick, etc, we can use $fetch to do the data fetching ~
+(Client side API call support)
