@@ -302,3 +302,19 @@ Summary
 ```bash
 pnpm dlx vite-bundle-visualizer
 ```
+
+## use `onMounted()` for calling function during page rendered stage
+
+```html
+<script setup lang="ts">
+import { useUserStore } from '@/stores/userStore';
+import { onMounted } from 'vue';
+
+const userStore = useUserStore();
+
+// This will only run once when the component mounts
+onMounted(() => {
+  userStore.fetchUser(); // similar like call once function, only run once
+});
+</script>
+```
