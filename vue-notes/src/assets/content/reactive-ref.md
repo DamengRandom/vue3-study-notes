@@ -82,3 +82,80 @@ In Component level how to use it?
   <input v-model="debounceText" />
 </template>
 ```
+
+## `ref` vs `shallowRef`
+
+- `ref`: create a `deeply reactive reference` that tracks `nested object values`
+
+```ts
+const deepRef = ref({
+  user: {
+    name: "John",
+    profile: {
+      age: 26
+    }
+  }
+});
+
+deepRef.value.user.profile.age = 24; // ✅ Triggers the reactivity ~
+
+console.log(deepRef.value); // { user: { name: "John", profile: { age: 24 } } }
+```
+
+- `shallowRef`: create a `shallow reactive reference` that only tracks its own value, not the values of its properties (Another word: create a reactive reference that only tracks `direct value changes`)
+
+```ts
+const shallowRefEg = shallowRef({
+  user: {
+    name: "Doe",
+    profile: {
+      age: 36
+    }
+  }
+});
+
+shallowRefEg.value.user.profile.age = 33; // this will NOT work ❌, because shallowRef only tracks its own value, not the values of its properties.
+
+// How to make it reactive? Using .value then,
+shallowRefEg.value = { user: { name: "Doe", profile: { age: 33 } } }; // this will work ✅, because shallowRefEg.value is a new object, not the same object as before.
+```
+
+- `ref` could be slower then `shallowRef` since shallowRef only track the direct value changes, not nested object values ~
+- `ref` is a bit `safer` choice and which is also predictable, better document because of `performance`, we choose to use `shallowRef` for certain cases ~
+
+### When to use which ~
+
+(1). When to sue `ShallowRef`?
+
+```ts
+// Large objects where you only care about replacement
+const largeDataset = shallowRef(/* huge dataset */)
+
+// Only triggers reactivity when replaced entirely
+largeDataset.value = newLargeDataset
+```
+
+```ts
+const immutableState = shallowRef(initialState)
+
+const updateState = (newState) => {
+  immutableState.value = { ...immutableState.value, ...newState }
+  // Always replace, never mutate
+}
+```
+
+(2). When to use `Ref`?
+
+```ts
+// Small objects where you need deep reactivity
+const smallState = ref({
+  count: 0,
+  nested: {
+    value: 10
+  }
+})
+
+// Triggers reactivity for all levels ~
+smallState.value.count = 1
+smallState.value.nested.value = 20
+```
